@@ -1,0 +1,18 @@
+TG WS Proxy Android is a local MTProto proxy for Telegram on Android. The app partially solves problems and, in some scenarios, speeds up the messenger by redirecting traffic through secure CloudFlare WebSocket connections or directly to Telegram data centers.
+
+Android version features
+
+* Modern UI/UX: The app is fully adapted to the current Android interface based on Material 3 and Jetpack Compose. Basic actions are accessible quickly and without cluttered screens.
+* Telegram integration: The "Apply in Telegram" button automatically transfers the proxy to compatible clients via tg://proxy (AyuGram, Plus Messenger, NekoGram, and others).
+* Background mode: It uses the Foreground Service, service activity notifications, and additional connection retention logic to prevent Android from overloading the proxy too aggressively. * Log Viewer: Built-in real-time event viewing helps you quickly understand what's happening with your connection, route, and connection pool.
+* Themes and palettes: Dynamic Colors are supported on Android 12+, as well as built-in palettes for older devices.
+* In-app auto-updates: No need to manually check for releases anymore—the app will automatically display an update notification when a new version is released.
+* "Information" section: The app contains extensive help on settings, CloudFlare features, the WS connection pool, and manual datacenter configuration.
+
+How it works
+
+Telegram Android → Local MTProto (default 127.0.0.1:1443) → TG WS Proxy → WSS (via CloudFlare or directly) → Telegram DC
+
+1. The app sets up a local MTProto proxy using the native Rust engine. 2. Intercepts Telegram connections via a local port and a generated secret key.
+3. Extracts the DC ID from the original packet and establishes a secure WebSocket (TLS) connection to the desired data center, proxying traffic through CloudFlare if necessary.
+4. Uses connection pooling, keepalive mechanisms, and fallback scenarios for more robust operation in real-world network conditions.
