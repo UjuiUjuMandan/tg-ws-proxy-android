@@ -1,6 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 set "CARGO_NDK_VERSION=3.5.4"
+set "ANDROID_NDK_VERSION=28.0.13004108"
 
 echo === Building Rust proxy library for Android (cdylib) ===
 echo === Architectures: arm64-v8a (SDK 24), armeabi-v7a (SDK 21) ===
@@ -18,19 +19,14 @@ if defined RUSTFLAGS (
 
 set "SDK_PATH=your\path"
 set "NDK_ROOT=%SDK_PATH%\ndk"
+set "ANDROID_NDK_HOME=%NDK_ROOT%\%ANDROID_NDK_VERSION%"
 
-if not exist "%NDK_ROOT%" (
-    echo Error: NDK folder not found at %NDK_ROOT%
+if not exist "%ANDROID_NDK_HOME%" (
+    echo Error: Android NDK %ANDROID_NDK_VERSION% not found at %ANDROID_NDK_HOME%
     exit /b 1
 )
 
-for /f "delims=" %%D in ('dir /b /ad /o-n "%NDK_ROOT%"') do (
-    set "NDK_VER=%%D"
-    goto :FoundNDK
-)
-:FoundNDK
-echo Using NDK: %NDK_VER%
-set "ANDROID_NDK_HOME=%NDK_ROOT%\%NDK_VER%"
+echo Using NDK: %ANDROID_NDK_VERSION%
 set "NDK_HOME=%ANDROID_NDK_HOME%"
 
 where cargo >nul 2>nul
