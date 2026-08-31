@@ -1,17 +1,19 @@
 @echo off
 setlocal enabledelayedexpansion
+set "CARGO_NDK_VERSION=3.5.4"
 
 echo === Building Rust proxy library for Android (cdylib) ===
 echo === Architectures: arm64-v8a (SDK 24), armeabi-v7a (SDK 21) ===
 echo.
 
 set "ROOT_DIR=%~dp0"
+set "BUILD_ROOT=%ROOT_DIR:~0,-1%"
 
 if not defined CARGO_HOME set "CARGO_HOME=%USERPROFILE%\.cargo"
 if defined RUSTFLAGS (
-    set "RUSTFLAGS=%RUSTFLAGS% --remap-path-prefix=%CARGO_HOME%=."
+    set "RUSTFLAGS=%RUSTFLAGS% --remap-path-prefix=%CARGO_HOME%=/cargo --remap-path-prefix=%BUILD_ROOT%=/build"
 ) else (
-    set "RUSTFLAGS=--remap-path-prefix=%CARGO_HOME%=."
+    set "RUSTFLAGS=--remap-path-prefix=%CARGO_HOME%=/cargo --remap-path-prefix=%BUILD_ROOT%=/build"
 )
 
 set "SDK_PATH=your\path"
@@ -36,14 +38,11 @@ if %errorlevel% neq 0 (
     echo Error: cargo not found in PATH
     exit /b 1
 )
-where cargo-ndk >nul 2>nul
+echo Ensuring cargo-ndk %CARGO_NDK_VERSION% is installed...
+cargo install --locked cargo-ndk@%CARGO_NDK_VERSION%
 if %errorlevel% neq 0 (
-    echo Installing cargo-ndk...
-    cargo install cargo-ndk
-    if %errorlevel% neq 0 (
-        echo Error: failed to install cargo-ndk
-        exit /b 1
-    )
+    echo Error: failed to install cargo-ndk %CARGO_NDK_VERSION%
+    exit /b 1
 )
 
 echo Ensuring Rust targets are installed...
