@@ -7,6 +7,13 @@ echo.
 
 set "ROOT_DIR=%~dp0"
 
+if not defined CARGO_HOME set "CARGO_HOME=%USERPROFILE%\.cargo"
+if defined RUSTFLAGS (
+    set "RUSTFLAGS=%RUSTFLAGS% --remap-path-prefix=%CARGO_HOME%=."
+) else (
+    set "RUSTFLAGS=--remap-path-prefix=%CARGO_HOME%=."
+)
+
 set "SDK_PATH=your\path"
 set "NDK_ROOT=%SDK_PATH%\ndk"
 
